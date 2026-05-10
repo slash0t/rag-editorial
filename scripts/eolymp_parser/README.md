@@ -45,18 +45,13 @@ poetry run python -m scripts.eolymp_parser 1-100 -d 2.0
   "url": "https://eolymp.com/en/problems/123",
   "statement": {
     "title": "Number of trailing zeros in factorial",
-    "difficulty": "Very easy",
     "time_limit": "1s",
     "memory_limit": "128 MB",
     "sections": {
       "description": ["Find the number of trailing zeros in n!."],
       "input": ["The input contains a single integer n (1≤n≤2⋅10^9)."],
       "output": ["Print the number of trailing zeros in n!."]
-    },
-    "examples": [
-      {"input": "7", "answer": "1"},
-      {"input": "12", "answer": "2"}
-    ]
+    }
   },
   "editorial": {
     "content": "The factorial of an integer n is the product of..."
