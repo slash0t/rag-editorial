@@ -4,133 +4,160 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>RAG Algo Solver</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;1,9..144,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-  <!-- Auth pages -->
+
+  <!-- ═══ AUTH PAGE ═══ -->
   <div id="auth-page" class="page auth-page">
-    <div class="auth-card">
-      <h1 class="auth-title">RAG Algo Solver</h1>
+    <div class="auth-wrap">
+      <div class="auth-logo">
+        <span class="logo-bracket">[</span><span class="logo-main">RAG</span><span class="logo-sep">_</span><span class="logo-main">ALGO</span><span class="logo-bracket">]</span>
+        <span class="logo-sub">// algorithmic problem solver</span>
+      </div>
 
-      <!-- Login form -->
-      <form id="login-form" class="auth-form">
-        <h2>Вход</h2>
-        <div class="form-group">
-          <label for="login-username">Имя пользователя</label>
-          <input type="text" id="login-username" required minlength="3" maxlength="50" />
-        </div>
-        <div class="form-group">
-          <label for="login-password">Пароль</label>
-          <input type="password" id="login-password" required minlength="8" maxlength="128" />
-        </div>
-        <div id="login-error" class="form-error"></div>
-        <button type="submit" class="btn btn-primary">Войти</button>
-        <p class="auth-switch">
-          Нет аккаунта? <a href="#" id="show-register">Зарегистрироваться</a>
-        </p>
-      </form>
+      <div class="auth-card">
+        <!-- Login -->
+        <form id="login-form" class="auth-form">
+          <div class="form-title"><span class="prompt-char">&gt;</span> ВХОД</div>
+          <div class="form-group">
+            <label for="login-username">// имя пользователя</label>
+            <input type="text" id="login-username" required minlength="3" maxlength="50"
+              autocomplete="username" spellcheck="false" />
+          </div>
+          <div class="form-group">
+            <label for="login-password">// пароль</label>
+            <input type="password" id="login-password" required minlength="8" maxlength="128"
+              autocomplete="current-password" />
+          </div>
+          <div id="login-error" class="form-error"></div>
+          <button type="submit" class="btn btn-primary">войти</button>
+          <p class="auth-switch">нет аккаунта? <a href="#" id="show-register">зарегистрироваться</a></p>
+        </form>
 
-      <!-- Register form -->
-      <form id="register-form" class="auth-form hidden">
-        <h2>Регистрация</h2>
-        <div class="form-group">
-          <label for="reg-username">Имя пользователя</label>
-          <input type="text" id="reg-username" required minlength="3" maxlength="50" />
-        </div>
-        <div class="form-group">
-          <label for="reg-password">Пароль</label>
-          <input type="password" id="reg-password" required minlength="8" maxlength="128" />
-        </div>
-        <div class="form-group">
-          <label for="reg-password-confirm">Подтвердите пароль</label>
-          <input type="password" id="reg-password-confirm" required minlength="8" maxlength="128" />
-        </div>
-        <div id="register-error" class="form-error"></div>
-        <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
-        <p class="auth-switch">
-          Уже есть аккаунт? <a href="#" id="show-login">Войти</a>
-        </p>
-      </form>
+        <!-- Register -->
+        <form id="register-form" class="auth-form hidden">
+          <div class="form-title"><span class="prompt-char">&gt;</span> РЕГИСТРАЦИЯ</div>
+          <div class="form-group">
+            <label for="reg-username">// имя пользователя</label>
+            <input type="text" id="reg-username" required minlength="3" maxlength="50"
+              autocomplete="username" spellcheck="false" />
+          </div>
+          <div class="form-group">
+            <label for="reg-password">// пароль</label>
+            <input type="password" id="reg-password" required minlength="8" maxlength="128"
+              autocomplete="new-password" />
+          </div>
+          <div class="form-group">
+            <label for="reg-password-confirm">// подтвердить пароль</label>
+            <input type="password" id="reg-password-confirm" required minlength="8" maxlength="128"
+              autocomplete="new-password" />
+          </div>
+          <div id="register-error" class="form-error"></div>
+          <button type="submit" class="btn btn-primary">зарегистрироваться</button>
+          <p class="auth-switch">уже есть аккаунт? <a href="#" id="show-login">войти</a></p>
+        </form>
+      </div>
     </div>
   </div>
 
-  <!-- Main app page -->
+  <!-- ═══ APP PAGE ═══ -->
   <div id="app-page" class="page hidden">
     <div class="app-layout">
+
       <!-- Sidebar -->
       <aside class="sidebar">
-        <div class="sidebar-header">
-          <h2>RAG Algo Solver</h2>
-          <div class="user-info">
-            <span id="username-display"></span>
-            <button id="logout-btn" class="btn btn-sm btn-outline">Выйти</button>
+        <div class="sidebar-top">
+          <div class="app-logo">[RAG_ALGO]</div>
+          <div class="user-row">
+            <span class="user-prompt">&gt;&nbsp;</span>
+            <span id="username-display" class="username-text"></span>
+            <button id="logout-btn" class="btn-ghost">exit</button>
           </div>
+          <button id="new-query-btn" class="btn btn-primary btn-block">+ новый запрос</button>
         </div>
-        <button id="new-query-btn" class="btn btn-primary btn-block">
-          + Новый запрос
-        </button>
-        <div class="sidebar-section">
-          <h3>История запросов</h3>
+
+        <div class="sidebar-body">
+          <div class="section-label">// история запросов</div>
           <div id="query-history" class="query-list">
-            <div class="query-list-empty">Загрузка...</div>
+            <div class="query-list-empty">загрузка...</div>
           </div>
           <div id="pagination" class="pagination"></div>
         </div>
       </aside>
 
-      <!-- Main content -->
+      <!-- Main -->
       <main class="main-content">
-        <!-- State: no query selected -->
+
+        <!-- Empty -->
         <div id="state-empty" class="content-state">
           <div class="empty-state">
-            <div class="empty-icon">?</div>
-            <h2>Выберите запрос или создайте новый</h2>
-            <p>Отправьте алгоритмическую задачу, и система найдёт похожие решения и сгенерирует ответ.</p>
-            <button class="btn btn-primary" onclick="document.getElementById('new-query-btn').click()">
-              Создать запрос
+            <div class="terminal-block">
+              <div class="t-line"><span class="t-prompt">$</span> rag-solver --interactive</div>
+              <div class="t-line t-accent">RAG Algo Solver <span class="t-dim">v1.0.0</span></div>
+              <div class="t-line t-dim">Описывайте алгоритмические задачи.</div>
+              <div class="t-line t-dim">Система найдёт похожие решения и сгенерирует ответ.</div>
+              <div class="t-line t-empty-line"><span class="t-prompt">$</span>&nbsp;<span class="cursor-blink">█</span></div>
+            </div>
+            <button class="btn btn-outline" onclick="document.getElementById('new-query-btn').click()">
+              новый запрос →
             </button>
           </div>
         </div>
 
-        <!-- State: create new query -->
+        <!-- Create -->
         <div id="state-create" class="content-state hidden">
-          <div class="create-query">
-            <h2>Новый запрос</h2>
-            <form id="query-form">
-              <div class="form-group">
-                <label for="query-text">Опишите задачу</label>
-                <textarea id="query-text" rows="8" required
-                  placeholder="Опишите алгоритмическую задачу, которую нужно решить..."></textarea>
+          <div class="create-chat">
+            <div class="chat-greeting">
+              <div class="chat-greeting-title">Новый запрос</div>
+              <div class="chat-greeting-sub">Опишите алгоритмическую задачу — система найдёт похожие решения и сгенерирует ответ.</div>
+            </div>
+<form id="query-form" class="chat-input-wrap">
+              <div class="chat-input-row">
+                <textarea id="query-text" rows="1" required
+                  placeholder="Опишите задачу..."></textarea>
+                <button type="submit" class="chat-send-btn" title="Отправить">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
               </div>
               <div id="query-create-error" class="form-error"></div>
-              <button type="submit" class="btn btn-primary">Отправить</button>
             </form>
           </div>
         </div>
 
-        <!-- State: query processing -->
+        <!-- Processing -->
         <div id="state-processing" class="content-state hidden">
           <div class="processing-state">
-            <div class="spinner"></div>
-            <h2>Запрос обрабатывается</h2>
-            <p>Система ищет похожие задачи и генерирует ответ. Это может занять некоторое время.</p>
-            <p class="processing-query-text" id="processing-text"></p>
+            <div class="terminal-block">
+              <div class="t-line"><span class="t-prompt">$</span> rag-solver analyze <span class="t-dim">--verbose</span></div>
+              <div class="t-line proc-step" id="proc-step-0">обогащение запроса</div>
+              <div class="t-line proc-step" id="proc-step-1">поиск похожих задач</div>
+              <div class="t-line proc-step" id="proc-step-2">построение контекста</div>
+              <div class="t-line proc-step" id="proc-step-3">генерация ответа</div>
+              <div class="t-line t-empty-line"><span class="t-prompt">$</span>&nbsp;<span class="cursor-blink">█</span></div>
+            </div>
+            <div class="processing-preview" id="processing-text"></div>
           </div>
         </div>
 
-        <!-- State: query result -->
-        <div id="state-result" class="content-state hidden">
+        <!-- Result -->
+        <div id="state-result" class="content-state content-top hidden">
           <div class="query-result">
-            <div class="result-section">
-              <h3>Ваш запрос</h3>
+            <div class="result-block">
+              <div class="section-label">// запрос</div>
               <div id="result-query-text" class="result-text"></div>
             </div>
-            <div class="result-section">
-              <h3>Ответ</h3>
-              <div id="result-response-text" class="result-text result-response"></div>
+            <div class="result-block">
+              <div class="section-label">
+                // ответ <span class="badge badge-done">ГОТОВО</span>
+              </div>
+              <div id="result-response-text" class="result-text result-answer"></div>
             </div>
-            <div id="similar-tasks-section" class="result-section hidden">
-              <h3>Похожие задачи</h3>
+            <div id="similar-tasks-section" class="result-block hidden">
+              <div class="section-label">// похожие задачи</div>
               <div id="similar-tasks-list" class="similar-tasks"></div>
             </div>
             <div class="result-meta">
@@ -139,6 +166,7 @@
             </div>
           </div>
         </div>
+
       </main>
     </div>
   </div>
