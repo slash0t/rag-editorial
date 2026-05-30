@@ -82,6 +82,43 @@ poetry run python -m scripts.enrich_tasks --in-place --skip-existing
 
 ---
 
+## Загрузка задач в сервис
+
+Скрипт `scripts/upload_tasks.py` читает обогащённые файлы из `output_enriched/` и отправляет их через `POST /tasks`. Требует запущенного сервиса и учётные данные администратора.
+
+**Идемпотентность:** номера уже отправленных задач сохраняются в `scripts/eolymp_parser/uploaded.json`. При повторном запуске эти задачи пропускаются.
+
+### Проверка на маленьком примере
+
+```bash
+# Отправить 3 задачи
+poetry run python scripts/upload_tasks.py --username admin --password secret -n 3
+```
+
+Убедитесь, что в `uploaded.json` появились номера. Повторный запуск той же команды покажет `Skip (already uploaded)` для этих задач.
+
+### Загрузить все задачи
+
+```bash
+# Все задачи из output_enriched/
+poetry run python scripts/upload_tasks.py --username admin --password secret
+
+# Нестандартный адрес сервиса
+poetry run python scripts/upload_tasks.py --username admin --password secret --url http://localhost:8000
+```
+
+| Флаг | Описание |
+|------|----------|
+| `--username` | Логин администратора (обязательно) |
+| `--password` | Пароль администратора (обязательно) |
+| `--url` | Базовый URL сервиса (по умолчанию `http://localhost:8000`) |
+| `-i` | Папка с обогащёнными файлами (по умолчанию `scripts/eolymp_parser/output_enriched`) |
+| `--state` | Файл состояния (по умолчанию `scripts/eolymp_parser/uploaded.json`) |
+| `-d` | Задержка между запросами в секундах (по умолчанию `0.3`) |
+| `-n` | Максимальное количество задач для загрузки |
+
+---
+
 ## Выходной формат
 
 Файлы `problem_{N}.json` в папке вывода:
