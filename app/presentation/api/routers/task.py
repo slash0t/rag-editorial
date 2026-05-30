@@ -31,6 +31,9 @@ async def create_task(
     )
     task = await task_repo.create(task)
 
+    vector_task_repo = APP_CONTAINER.vector_task_repo()
+    await vector_task_repo.upsert(task)
+
     return TaskResponse(
         id=task.id,
         title=task.title,
@@ -93,6 +96,9 @@ async def update_task(
 
     task = await task_repo.update(task)
 
+    vector_task_repo = APP_CONTAINER.vector_task_repo()
+    await vector_task_repo.upsert(task)
+
     return TaskResponse(
         id=task.id,
         title=task.title,
@@ -118,3 +124,6 @@ async def delete_task(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Task not found",
         )
+
+    vector_task_repo = APP_CONTAINER.vector_task_repo()
+    await vector_task_repo.delete(task_id)

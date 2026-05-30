@@ -1,5 +1,6 @@
 from dependency_injector import containers, providers
 from faststream.kafka import KafkaBroker
+from qdrant_client import AsyncQdrantClient
 
 from app.domain.services.auth_service import AuthService
 from app.infrastructure.adapters.composer.plain_prompt_composer import (
@@ -8,13 +9,19 @@ from app.infrastructure.adapters.composer.plain_prompt_composer import (
 from app.infrastructure.adapters.context.plain_task_context_builder import (
     PlainTaskContextBuilder,
 )
+from app.infrastructure.adapters.embedding.bge_m3_embedding_client import (
+    BgeM3EmbeddingClient,
+)
 from app.infrastructure.adapters.enricher.passthrough_query_enricher import (
     PassthroughQueryEnricher,
 )
 from app.infrastructure.adapters.llm.yandex_cloud_llm_client import YandexCloudLLMClient
 from app.infrastructure.adapters.publisher.kafka_publisher import KafkaPublisher
-from app.infrastructure.adapters.search.empty_similar_task_searcher import (
-    EmptySimilarTaskSearcher,
+from app.infrastructure.adapters.qdrant.qdrant_similar_task_searcher import (
+    QdrantSimilarTaskSearcher,
+)
+from app.infrastructure.adapters.qdrant.qdrant_vector_task_repository import (
+    QdrantVectorTaskRepository,
 )
 from app.infrastructure.database.repositories.query import SQLQueryRepository
 from app.infrastructure.database.repositories.query_processing import (
@@ -26,6 +33,7 @@ from app.infrastructure.database.session import create_async_session_factory
 from app.settings.jwt import JWTConfig
 from app.settings.kafka import KafkaConfig
 from app.settings.postgres import PostgresConfig
+from app.settings.qdrant import QdrantConfig
 from app.settings.yandex_cloud import YandexCloudConfig
 
 
@@ -85,12 +93,37 @@ class AppContainer(containers.DeclarativeContainer):
         KafkaPublisher, bootstrap_servers=kafka_config.provided.bootstrap_servers
     )
 
+    qdrant_config: providers.Singleton[QdrantConfig] = providers.Singleton(QdrantConfig)
+
+    qdrant_client: providers.Singleton[AsyncQdrantClient] = providers.Singleton(
+        AsyncQdrantClient,
+        host=qdrant_config.provided.host,
+        port=qdrant_config.provided.port,
+    )
+
+    embedding_client: providers.Singleton[BgeM3EmbeddingClient] = providers.Singleton(
+        BgeM3EmbeddingClient,
+        config=qdrant_config,
+    )
+
     enricher: providers.Singleton[PassthroughQueryEnricher] = providers.Singleton(
         PassthroughQueryEnricher
     )
 
-    searcher: providers.Singleton[EmptySimilarTaskSearcher] = providers.Singleton(
-        EmptySimilarTaskSearcher
+    searcher: providers.Singleton[QdrantSimilarTaskSearcher] = providers.Singleton(
+        QdrantSimilarTaskSearcher,
+        client=qdrant_client,
+        embedding_client=embedding_client,
+        config=qdrant_config,
+    )
+
+    vector_task_repo: providers.Singleton[QdrantVectorTaskRepository] = (
+        providers.Singleton(
+            QdrantVectorTaskRepository,
+            client=qdrant_client,
+            embedding_client=embedding_client,
+            config=qdrant_config,
+        )
     )
 
     context_builder: providers.Singleton[PlainTaskContextBuilder] = providers.Singleton(
@@ -105,5 +138,6 @@ class AppContainer(containers.DeclarativeContainer):
         YandexCloudLLMClient,
         yandex_cloud_config,
     )
+
 
 APP_CONTAINER = AppContainer()

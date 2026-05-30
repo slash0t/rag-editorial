@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import dataclass
 
 
@@ -8,6 +9,7 @@ class RawQuery:
 
 @dataclass
 class SimilarTask:
+    task_id: uuid.UUID
     title: str
     task_text: str
     solution: str
