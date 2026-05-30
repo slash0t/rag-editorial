@@ -24,3 +24,13 @@ front/node_modules/
 # OS
 .DS_Store
 Thumbs.db
+
+# Claude
+.claude/
+CLAUDE.md
+
+# eolymp parser output
+scripts/eolymp_parser/output/
+scripts/eolymp_parser/output_enriched/
+scripts/eolymp_parser/output.zip
+scripts/eolymp_parser/uploaded.json
