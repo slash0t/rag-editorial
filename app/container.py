@@ -11,9 +11,7 @@ from app.infrastructure.adapters.composer.plain_prompt_composer import (
 from app.infrastructure.adapters.context.plain_task_context_builder import (
     PlainTaskContextBuilder,
 )
-from app.infrastructure.adapters.enricher.passthrough_query_enricher import (
-    PassthroughQueryEnricher,
-)
+from app.infrastructure.adapters.enricher.llm_query_enricher import LLMQueryEnricher
 from app.infrastructure.adapters.llm.yandex_cloud_llm_client import YandexCloudLLMClient
 from app.infrastructure.adapters.publisher.kafka_publisher import KafkaPublisher
 from app.infrastructure.adapters.embedding.yandex_cloud_embedding_client import (
@@ -109,8 +107,14 @@ class AppContainer(containers.DeclarativeContainer):
         providers.Singleton(YandexCloudEmbeddingClient, config=yandex_cloud_config)
     )
 
-    enricher: providers.Singleton[PassthroughQueryEnricher] = providers.Singleton(
-        PassthroughQueryEnricher
+    llm_client: providers.Singleton[YandexCloudLLMClient] = providers.Singleton(
+        YandexCloudLLMClient,
+        yandex_cloud_config,
+    )
+
+    enricher: providers.Singleton[LLMQueryEnricher] = providers.Singleton(
+        LLMQueryEnricher,
+        llm_client=llm_client,
     )
 
     searcher: providers.Singleton[QdrantSimilarTaskSearcher] = providers.Singleton(
@@ -135,11 +139,6 @@ class AppContainer(containers.DeclarativeContainer):
 
     composer: providers.Singleton[PlainPromptComposer] = providers.Singleton(
         PlainPromptComposer
-    )
-
-    llm_client: providers.Singleton[YandexCloudLLMClient] = providers.Singleton(
-        YandexCloudLLMClient,
-        yandex_cloud_config,
     )
 
 
