@@ -180,7 +180,7 @@ async function showResult(query, animate = false) {
           <span class="task-title">${escapeHTML(t.title)}</span>
           <span class="task-links">
             ${t.task_url ? `<a href="${escapeHTML(t.task_url)}" target="_blank" rel="noopener">задача ↗</a>` : ''}
-            ${t.solution_url ? `<a href="${escapeHTML(t.solution_url)}" target="_blank" rel="noopener">решение ↗</a>` : ''}
+            ${t.solution_url ? `<a href="${escapeHTML(t.solution_url)}" target="_blank" rel="noopener">разбор ↗</a>` : ''}
           </span>
         </div>`).join('');
       section.classList.remove('hidden');
