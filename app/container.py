@@ -5,6 +5,7 @@ from faststream.kafka import KafkaBroker
 from qdrant_client import AsyncQdrantClient
 
 from app.domain.services.auth_service import AuthService
+from app.infrastructure.adapters.composer.idea_prompt_composer import IdeaPromptComposer
 from app.infrastructure.adapters.composer.plain_prompt_composer import (
     PlainPromptComposer,
 )
@@ -137,8 +138,8 @@ class AppContainer(containers.DeclarativeContainer):
         PlainTaskContextBuilder
     )
 
-    composer: providers.Singleton[PlainPromptComposer] = providers.Singleton(
-        PlainPromptComposer
+    composer: providers.Singleton[IdeaPromptComposer] = providers.Singleton(
+        IdeaPromptComposer
     )
 
 
