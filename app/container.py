@@ -6,9 +6,6 @@ from qdrant_client import AsyncQdrantClient
 
 from app.domain.services.auth_service import AuthService
 from app.infrastructure.adapters.composer.idea_prompt_composer import IdeaPromptComposer
-from app.infrastructure.adapters.composer.plain_prompt_composer import (
-    PlainPromptComposer,
-)
 from app.infrastructure.adapters.context.plain_task_context_builder import (
     PlainTaskContextBuilder,
 )
