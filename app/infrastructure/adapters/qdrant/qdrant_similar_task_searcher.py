@@ -38,5 +38,4 @@ class QdrantSimilarTaskSearcher(SimilarTaskSearcher):
                 solution=point.payload.get("solution", ""),
             )
             for point in results.points
-            if point.payload.get("solution")
         ]

@@ -1,7 +1,7 @@
 import uuid
 
 from qdrant_client import AsyncQdrantClient
-from qdrant_client.models import PointStruct
+from qdrant_client.models import PointIdsList, PointStruct
 
 from app.domain.repositories.vector_task import VectorTaskRepository
 from app.domain.services.embedding_client import EmbeddingClient
@@ -43,5 +43,5 @@ class QdrantVectorTaskRepository(VectorTaskRepository):
     async def delete(self, task_id: uuid.UUID) -> None:
         await self._client.delete(
             collection_name=self._config.collection_name,
-            points_selector=[str(task_id)],
+            points_selector=PointIdsList(points=[str(task_id)]),
         )
