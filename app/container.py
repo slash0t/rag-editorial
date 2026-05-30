@@ -9,9 +9,6 @@ from app.infrastructure.adapters.composer.plain_prompt_composer import (
 from app.infrastructure.adapters.context.plain_task_context_builder import (
     PlainTaskContextBuilder,
 )
-from app.infrastructure.adapters.embedding.bge_m3_embedding_client import (
-    BgeM3EmbeddingClient,
-)
 from app.infrastructure.adapters.enricher.passthrough_query_enricher import (
     PassthroughQueryEnricher,
 )
@@ -35,6 +32,14 @@ from app.settings.kafka import KafkaConfig
 from app.settings.postgres import PostgresConfig
 from app.settings.qdrant import QdrantConfig
 from app.settings.yandex_cloud import YandexCloudConfig
+
+
+def _create_embedding_client(config: QdrantConfig):
+    from app.infrastructure.adapters.embedding.bge_m3_embedding_client import (
+        BgeM3EmbeddingClient,
+    )
+
+    return BgeM3EmbeddingClient(config=config)
 
 
 class AppContainer(containers.DeclarativeContainer):
@@ -101,8 +106,8 @@ class AppContainer(containers.DeclarativeContainer):
         port=qdrant_config.provided.port,
     )
 
-    embedding_client: providers.Singleton[BgeM3EmbeddingClient] = providers.Singleton(
-        BgeM3EmbeddingClient,
+    embedding_client = providers.Singleton(
+        _create_embedding_client,
         config=qdrant_config,
     )
 
