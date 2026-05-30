@@ -284,10 +284,11 @@ document.getElementById('query-form').addEventListener('submit', async (e) => {
 
   try {
     const result = await api.createQuery(text);
-    currentQueryId = result.id;
+    const queryId = String(result.query_id);
+    currentQueryId = queryId;
     await loadHistory();
-    showProcessing(result);
-    startPolling(result.id);
+    showProcessing({ text });
+    startPolling(queryId);
   } catch (err) {
     errorEl.textContent = err.message;
   } finally {
@@ -301,4 +302,8 @@ function escapeHTML(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
+}
+
+if (api.isAuthenticated()) {
+  initQueries();
 }
