@@ -1,12 +1,13 @@
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query as QueryParam, status
 
 from app.container import APP_CONTAINER
 from app.infrastructure.database.models import Task, User
 from app.presentation.api.dependencies.auth import get_current_admin
 from app.presentation.api.schemas.task import (
     TaskCreateRequest,
+    TaskPaginatedResponse,
     TaskResponse,
     TaskUpdateRequest,
 )
@@ -43,6 +44,37 @@ async def create_task(
         solution_url=task.solution_url,
         comment=task.comment,
         created_at=task.created_at,
+    )
+
+
+@router.get("", response_model=TaskPaginatedResponse)
+async def list_tasks(
+    _current_user: User = Depends(get_current_admin),
+    page: int = QueryParam(default=1, ge=1),
+    size: int = QueryParam(default=10, ge=1, le=100),
+) -> TaskPaginatedResponse:
+    task_repo = APP_CONTAINER.task_repo()
+
+    offset = (page - 1) * size
+    tasks, total = await task_repo.list_all(offset, size)
+
+    return TaskPaginatedResponse(
+        items=[
+            TaskResponse(
+                id=t.id,
+                title=t.title,
+                text=t.text,
+                task_url=t.task_url,
+                solution=t.solution,
+                solution_url=t.solution_url,
+                comment=t.comment,
+                created_at=t.created_at,
+            )
+            for t in tasks
+        ],
+        total=total,
+        page=page,
+        size=size,
     )
 
 

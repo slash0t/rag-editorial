@@ -33,6 +33,13 @@ class TaskResponse(BaseModel):
     created_at: datetime
 
 
+class TaskPaginatedResponse(BaseModel):
+    items: list[TaskResponse]
+    total: int
+    page: int
+    size: int
+
+
 class SimilarTaskResponse(BaseModel):
     id: UUID
     title: str

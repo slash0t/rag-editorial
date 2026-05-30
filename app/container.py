@@ -1,3 +1,5 @@
+import logging
+
 from dependency_injector import containers, providers
 from faststream.kafka import KafkaBroker
 from qdrant_client import AsyncQdrantClient
@@ -14,6 +16,9 @@ from app.infrastructure.adapters.enricher.passthrough_query_enricher import (
 )
 from app.infrastructure.adapters.llm.yandex_cloud_llm_client import YandexCloudLLMClient
 from app.infrastructure.adapters.publisher.kafka_publisher import KafkaPublisher
+from app.infrastructure.adapters.embedding.yandex_cloud_embedding_client import (
+    YandexCloudEmbeddingClient,
+)
 from app.infrastructure.adapters.qdrant.qdrant_similar_task_searcher import (
     QdrantSimilarTaskSearcher,
 )
@@ -34,16 +39,10 @@ from app.settings.qdrant import QdrantConfig
 from app.settings.yandex_cloud import YandexCloudConfig
 
 
-def _create_embedding_client(config: QdrantConfig):
-    from app.infrastructure.adapters.embedding.bge_m3_embedding_client import (
-        BgeM3EmbeddingClient,
-    )
-
-    return BgeM3EmbeddingClient(config=config)
-
-
 class AppContainer(containers.DeclarativeContainer):
     config = providers.Configuration()
+
+    logger = providers.Singleton(logging.getLogger, "app")
 
     yandex_cloud_config: providers.Singleton[YandexCloudConfig] = providers.Singleton(
         YandexCloudConfig
@@ -106,9 +105,8 @@ class AppContainer(containers.DeclarativeContainer):
         port=qdrant_config.provided.port,
     )
 
-    embedding_client = providers.Singleton(
-        _create_embedding_client,
-        config=qdrant_config,
+    embedding_client: providers.Singleton[YandexCloudEmbeddingClient] = (
+        providers.Singleton(YandexCloudEmbeddingClient, config=yandex_cloud_config)
     )
 
     enricher: providers.Singleton[PassthroughQueryEnricher] = providers.Singleton(

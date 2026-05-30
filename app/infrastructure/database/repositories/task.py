@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import select, delete as sa_delete
+from sqlalchemy import func as sa_func, select, delete as sa_delete
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from app.domain.repositories.task import TaskRepository
@@ -30,6 +30,24 @@ class SQLTaskRepository(TaskRepository):
             await session.commit()
             await session.refresh(merged)
             return merged
+
+    async def list_all(
+        self, offset: int = 0, limit: int = 10
+    ) -> tuple[list[Task], int]:
+        async with self._session_factory() as session:
+            count_result = await session.execute(
+                select(sa_func.count()).select_from(Task)
+            )
+            total = count_result.scalar_one()
+
+            stmt = (
+                select(Task)
+                .order_by(Task.created_at.desc())
+                .offset(offset)
+                .limit(limit)
+            )
+            result = await session.execute(stmt)
+            return list(result.scalars().all()), total
 
     async def delete(self, task_id: uuid.UUID) -> bool:
         async with self._session_factory() as session:
