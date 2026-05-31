@@ -163,6 +163,7 @@ async function showResult(query, animate = false) {
   const responseText = query.response_text || 'ответ пока не получен';
 
   if (animate) {
+    responseEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
     await typewriter(responseEl, responseText);
   } else {
     responseEl.textContent = responseText;

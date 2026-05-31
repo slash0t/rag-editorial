@@ -562,6 +562,8 @@ a:hover { text-decoration: underline; }
   resize: none;
   line-height: 1.5;
   padding: 10px 0;
+  box-sizing: border-box;
+  min-height: 47px;
   max-height: 50vh;
   overflow-y: auto;
   scrollbar-width: thin;
