@@ -16,7 +16,7 @@
 
 ## 🛠️ Технологии
 
-Python 3.12, FastAPI, FastStream (Kafka), SQLAlchemy, PostgreSQL, Qdrant, Yandex Cloud LLM, LangChain. Фронтенд — Express на чистом JavaScript.
+Python 3.12, FastAPI, FastStream (Kafka), SQLAlchemy, PostgreSQL, Qdrant, Yandex Cloud LLM. Фронтенд — Express на чистом JavaScript.
 
 ## 🚀 Запуск
 
