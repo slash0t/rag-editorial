@@ -34,3 +34,10 @@ scripts/eolymp_parser/output/
 scripts/eolymp_parser/output_enriched/
 scripts/eolymp_parser/output.zip
 scripts/eolymp_parser/uploaded.json
+
+# atcoder parser output
+scripts/atcoder_parser/output/
+scripts/atcoder_parser/output_enriched/
+scripts/atcoder_parser/test_output/
+scripts/atcoder_parser/test_enriched/
+scripts/atcoder_parser/uploaded.json
