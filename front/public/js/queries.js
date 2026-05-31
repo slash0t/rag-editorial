@@ -1,3 +1,12 @@
+// Backend sends naive UTC timestamps (datetime.utcnow, no tz suffix).
+// Append 'Z' when absent so JS parses as UTC, then locale methods
+// render in the user's regional timezone/format.
+function parseUTC(s) {
+  if (!s) return new Date(NaN);
+  const hasTz = /[zZ]|[+-]\d{2}:?\d{2}$/.test(s);
+  return new Date(hasTz ? s : s + 'Z');
+}
+
 let currentPage = 1;
 let currentQueryId = null;
 let pollingTimer = null;
@@ -59,7 +68,7 @@ async function loadHistory(page) {
 
 function queryItemHTML(q) {
   const status = getQueryStatus(q);
-  const date = new Date(q.created_at).toLocaleDateString('ru-RU', {
+  const date = parseUTC(q.created_at).toLocaleDateString(undefined, {
     day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
   });
   const active = q.id === currentQueryId ? ' active' : '';
@@ -147,11 +156,11 @@ function updateProcSteps() {
 async function showResult(query, animate = false) {
   document.getElementById('result-query-text').textContent = query.text;
 
-  const createdAt = new Date(query.created_at).toLocaleString('ru-RU');
+  const createdAt = parseUTC(query.created_at).toLocaleString();
   document.getElementById('result-created').textContent = `создан: ${createdAt}`;
 
   if (query.responded_at) {
-    const respondedAt = new Date(query.responded_at).toLocaleString('ru-RU');
+    const respondedAt = parseUTC(query.responded_at).toLocaleString();
     document.getElementById('result-responded').textContent = `ответ: ${respondedAt}`;
   } else {
     document.getElementById('result-responded').textContent = '';
