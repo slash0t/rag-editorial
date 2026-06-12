@@ -3,3 +3,68 @@ include:
   - docker/kafka.yml
   - docker/qdrant.yml
   - docker/kafbat-ui.yml
+
+# One shared image for api / streams / migrate (built from the root Dockerfile).
+# The run command is NOT baked into the image — it is provided per-service below.
+x-app: &app
+  build:
+    context: .
+    dockerfile: Dockerfile
+  image: rag-algo-solver-app
+  environment:
+    POSTGRES_HOST: postgres
+    QDRANT_HOST: qdrant
+  volumes:
+    - ./env.json:/app/env.json:ro
+
+services:
+  migrate:
+    <<: *app
+    command: alembic upgrade head
+    restart: "no"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  api:
+    <<: *app
+    command: uvicorn app.presentation.api.app:app --host 0.0.0.0 --port 8000
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+
+  streams:
+    <<: *app
+    command: faststream run app.presentation.streams.__main__:stream_app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      qdrant:
+        condition: service_started
+      migrate:
+        condition: service_completed_successfully
+
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+    image: rag-algo-solver-front
+    restart: unless-stopped
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api

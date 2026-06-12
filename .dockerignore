@@ -1,0 +1,11 @@
+.git
+.venv
+**/__pycache__
+*.pyc
+*.pyo
+.ruff_cache
+.pytest_cache
+.idea
+.mypy_cache
+front/node_modules
+test.py
